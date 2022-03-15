@@ -1,5 +1,5 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { getScreenshotOfTweet } from './getScreenshot.js';
+import { getAllTweetScreenshots } from './Screenshots.js';
 
 const getTweetsByUsername = async (req, res) => {
   const {
@@ -18,11 +18,9 @@ const getTweetsByUsername = async (req, res) => {
     });
 
     // TODO: get tweet ids from DB, compare, etc.
-    const screenshots = await Promise.all(
-      tweets.map(async ({ id }) => {
-        const screenshot = await getScreenshotOfTweet(username, id);
-        return screenshot;
-      })
+    const screenshots = await getAllTweetScreenshots(
+      username,
+      tweets.map(({ id }) => id)
     );
 
     res.json(tweets);
