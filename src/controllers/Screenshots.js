@@ -1,37 +1,45 @@
 import { buildTweetUrl } from '../utils/utils.js';
 import puppeteer from 'puppeteer';
 
-const getScreenshot = async (username, tweetId, page) => {
+const getScreenshot = async (username, tweetId, browser) => {
   const tweetUrl = buildTweetUrl(username, tweetId);
   const selector = '[data-testid="tweet"]';
+
+  const page = await browser.newPage();
+  await page.setUserAgent(
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+  );
 
   await page.goto(tweetUrl);
   await page.waitForSelector(selector, { timeout: 5000 });
 
   const tweetElement = await page.$(selector);
+
+  // TODO: check if screenshot is already in DB
+  // remove path and define return type
   const screenshot = await tweetElement.screenshot({
     path: `./src/screenshots/${username}-${tweetId}.png`,
   });
+
+  await page.close();
 
   return screenshot;
 };
 
 const getAllTweetScreenshots = async (username, tweetIds) => {
   const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.setUserAgent(
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
-  );
+
   const screenshots = await Promise.all(
     tweetIds.map(async (tweetId) => {
-      const screenshot = await getScreenshot(username, tweetId, page);
-      return screenshot;
+      const screenshot = await getScreenshot(username, tweetId, browser);
+      return { tweetId, screenshot };
     })
   );
 
-  await page.close();
+  console.log('screenshots', screenshots);
+
   await browser.close();
-  debugger;
+  // TODO: save screenshots to DB
 };
 
 export { getAllTweetScreenshots };
