@@ -1,6 +1,20 @@
 import { TwitterApi } from 'twitter-api-v2';
 import { getAllTweetScreenshots } from './Screenshots.js';
 
+/**
+ * Function to get user id by username
+ * @param {object} client (twitter-api-v2 readonly client)
+ * @param {string} username
+ * @returns {Promise<string>}
+ */
+const getUserIdByUsername = async (client, username) => {
+  const res = await client.v2.userByUsername(username);
+  if (res.errors && res.errors.length > 0) {
+    throw new Error(res.errors[0].detail);
+  }
+  return res.data.id;
+};
+
 const getTweetsByUsername = async (req, res) => {
   const {
     params: { username },
@@ -32,20 +46,6 @@ const getTweetsByUsername = async (req, res) => {
     res.status(500).json(error.message);
     throw new Error(error);
   }
-};
-
-/**
- * Function to get user id by username
- * @param {object} client (twitter-api-v2 readonly client)
- * @param {string} username
- * @returns {Promise<string>}
- */
-const getUserIdByUsername = async (client, username) => {
-  const res = await client.v2.userByUsername(username);
-  if (res.errors && res.errors.length > 0) {
-    throw new Error(res.errors[0].detail);
-  }
-  return res.data.id;
 };
 
 export { getTweetsByUsername };
