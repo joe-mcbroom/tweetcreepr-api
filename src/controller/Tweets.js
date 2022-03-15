@@ -1,5 +1,19 @@
 import { TwitterApi } from 'twitter-api-v2';
-import { getScreenshotOfTweet } from './getScreenshot.js';
+import { getAllTweetScreenshots } from './Screenshots.js';
+
+/**
+ * Function to get user id by username
+ * @param {object} client (twitter-api-v2 readonly client)
+ * @param {string} username
+ * @returns {Promise<string>}
+ */
+const getUserIdByUsername = async (client, username) => {
+  const res = await client.v2.userByUsername(username);
+  if (res.errors && res.errors.length > 0) {
+    throw new Error(res.errors[0].detail);
+  }
+  return res.data.id;
+};
 
 const getTweetsByUsername = async (req, res) => {
   const {
@@ -18,11 +32,9 @@ const getTweetsByUsername = async (req, res) => {
     });
 
     // TODO: get tweet ids from DB, compare, etc.
-    const screenshots = await Promise.all(
-      tweets.map(async ({ id }) => {
-        const screenshot = await getScreenshotOfTweet(username, id);
-        return screenshot;
-      })
+    const screenshots = await getAllTweetScreenshots(
+      username,
+      tweets.map(({ id }) => id)
     );
 
     res.json(tweets);
@@ -34,14 +46,6 @@ const getTweetsByUsername = async (req, res) => {
     res.status(500).json(error.message);
     throw new Error(error);
   }
-};
-
-const getUserIdByUsername = async (client, username) => {
-  const res = await client.v2.userByUsername(username);
-  if (res.errors && res.errors.length > 0) {
-    throw new Error(res.errors[0].detail);
-  }
-  return res.data.id;
 };
 
 export { getTweetsByUsername };
