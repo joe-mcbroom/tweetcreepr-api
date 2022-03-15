@@ -1,6 +1,14 @@
 import { buildTweetUrl } from '../utils/utils.js';
 import puppeteer from 'puppeteer';
 
+/**
+ * Function to open a new page, load the tweet, and take a screenshot
+ * @param {string} username
+ * @param {string} tweetId
+ * @param {object} browser (puppeteer browser)
+ * @returns {Promise<Buffer>}
+ *
+ */
 const getScreenshot = async (username, tweetId, browser) => {
   const tweetUrl = buildTweetUrl(username, tweetId);
   const selector = '[data-testid="tweet"]';
@@ -26,6 +34,11 @@ const getScreenshot = async (username, tweetId, browser) => {
   return screenshot;
 };
 
+/**
+ * Function to get all screenshots for given ids and username
+ * @param {string} username
+ * @param {string[]} tweetIds array of tweet ids
+ */
 const getAllTweetScreenshots = async (username, tweetIds) => {
   const browser = await puppeteer.launch();
 

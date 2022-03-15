@@ -34,6 +34,12 @@ const getTweetsByUsername = async (req, res) => {
   }
 };
 
+/**
+ * Function to get user id by username
+ * @param {object} client (twitter-api-v2 readonly client)
+ * @param {string} username
+ * @returns {Promise<string>}
+ */
 const getUserIdByUsername = async (client, username) => {
   const res = await client.v2.userByUsername(username);
   if (res.errors && res.errors.length > 0) {
