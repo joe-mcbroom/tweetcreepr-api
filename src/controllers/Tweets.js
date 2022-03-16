@@ -18,7 +18,7 @@ const getUserIdByUsername = async (client, username) => {
 const getTweetsByUsername = async (req, res) => {
   const {
     params: { username },
-    query: { limit },
+    query: { limit, saveTweets = false },
   } = req;
   try {
     const twitterApi = new TwitterApi(process.env.BEARER_TOKEN);
@@ -31,17 +31,18 @@ const getTweetsByUsername = async (req, res) => {
       max_results: limit ? Math.min(limit, 10) : 10, // max 10 tweets
     });
 
-    // TODO: get tweet ids from DB, compare, etc.
-    const screenshots = await getAllTweetScreenshots(
-      username,
-      tweets.map(({ id }) => id)
-    );
+    if (JSON.parse(saveTweets)) {
+      // TODO: get tweet ids from DB, compare, etc.
+      const screenshots = await getAllTweetScreenshots(
+        username,
+        tweets.map(({ id }) => id)
+      );
+    }
 
-    res.json(tweets);
-    return {
+    res.status(200).json({
       tweets,
       count: meta.result_count,
-    };
+    });
   } catch (error) {
     res.status(500).json(error.message);
     throw new Error(error);

@@ -18,6 +18,8 @@ BEARER_TOKEN="$access_token GOES HERE"
 ```
 - `npm install` to install all required dependencies
 - `npm run dev` to start the local server
+- `npm run test` to run the tests
+- `npm run test-watch` to run the tests in watch mode (will run tests on save)
 
 # Code Overview
 
@@ -26,6 +28,7 @@ BEARER_TOKEN="$access_token GOES HERE"
 - [expressjs](https://github.com/expressjs/express) - The server for handling and routing HTTP requests
 - [puppeteer](https://github.com/puppeteer/puppeteer) - The headless browser for taking screenshots of **tweets**
 - [firebase](https://firebase.google.com/) - The database for storing screenshots
+- [jest](https://jestjs.io/) - The testing framework for Node
 
 ## Application Structure
 
@@ -33,6 +36,7 @@ BEARER_TOKEN="$access_token GOES HERE"
 - `src/router/` - API Routes
 - `src/controllers/` - API controllers for handling requests
 - `src/utils/` - utility functions
+- `src/tests/` - unit tests (ie: `module.name.spec.js`)
 
 ## Error Handling
 
