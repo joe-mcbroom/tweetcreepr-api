@@ -1,6 +1,18 @@
 import request from 'supertest';
 import app from '../app.js';
 
+describe('Test the root endpoints', () => {
+  it('should return a 404 for a non-existent endpoint', async () => {
+    const response = await request(app).get('/api/v1/non-existent-endpoint');
+    expect(response.status).toBe(404);
+  });
+  it('should return a 400 with message at /tweets endpoint', async () => {
+    const response = await request(app).get('/api/tweets');
+    expect(response.status).toBe(400);
+    expect(response.body.error).toEqual('Please specify a username');
+  });
+});
+
 describe('Test the tweets endpoint', () => {
   test('It should respond to the GET method', async () => {
     const response = await request(app).get('/api/tweets/jack?');
