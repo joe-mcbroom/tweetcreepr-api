@@ -5,7 +5,7 @@ import puppeteer from 'puppeteer';
  * Function to open a new page, load the tweet, and take a screenshot
  * @param {string} username
  * @param {string} tweetId
- * @param {object} browser (puppeteer browser)
+ * @param {object} browser (puppeteer browser instance)
  * @returns {Promise<Buffer>}
  *
  */
